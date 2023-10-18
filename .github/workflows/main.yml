@@ -8,7 +8,7 @@ jobs:
   build-and-deploy:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4.2.0
 
     - name: 'Upload TrustFrameworkBase Policy'
       uses: azure-ad-b2c/deploy-trustframework-policy@v3
