@@ -1,0 +1,1975 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TrustFrameworkPolicy 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns="http://schemas.microsoft.com/online/cpim/schemas/2013/06" 
+  PolicySchemaVersion="0.3.0.0" 
+  TenantId="Volturi.onmicrosoft.com" 
+  PolicyId="B2C_1A_TrustFrameworkExtensions" 
+  PublicPolicyUri="http://Volturi.onmicrosoft.com/B2C_1A_TrustFrameworkExtensions"
+  DeploymentMode="Development"
+  UserJourneyRecorderEndpoint="urn:journeyrecorder:applicationinsights">
+  
+  <BasePolicy>
+    <TenantId>Volturi.onmicrosoft.com</TenantId>
+    <PolicyId>B2C_1A_TrustFrameworkLocalization</PolicyId>
+  </BasePolicy>
+ <BuildingBlocks>
+  <ClaimsSchema>
+      <ClaimType Id="isForgotPassword">
+        <DisplayName>Indicates whether the user selected Forgot Password</DisplayName>
+        <DataType>boolean</DataType>
+        <AdminHelpText></AdminHelpText>
+      </ClaimType>
+      <ClaimType Id="Otp">
+      <DisplayName>Secondary One-time password</DisplayName>
+      <DataType>string</DataType>
+    </ClaimType>
+    <ClaimType Id="emailRequestBody">
+      <DisplayName>SendGrid request body</DisplayName>
+      <DataType>string</DataType>
+    </ClaimType>
+    <ClaimType Id="VerificationCode">
+      <DisplayName>OTP Verification Code</DisplayName>
+      <DataType>string</DataType>
+      <UserHelpText>Enter your email verification code</UserHelpText>
+      <UserInputType>TextBox</UserInputType>
+    </ClaimType>
+    <ClaimType Id="subject">
+        <DisplayName>Email subject</DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
+      <ClaimType Id="message">
+        <DisplayName>Email message</DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
+      <ClaimType Id="codeIntro">
+        <DisplayName>Email code introduction</DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
+      <ClaimType Id="signature">
+        <DisplayName>Email signature</DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
+      <ClaimType Id="strongAuthenticationPhoneNumber">
+      <DisplayName>Phone Number</DisplayName>
+      <DataType>string</DataType>
+      <Mask Type="Simple">XXX-XXX-</Mask>
+      <UserHelpText>Your telephone number</UserHelpText>
+    </ClaimType>
+
+    <ClaimType Id="Verified.strongAuthenticationPhoneNumber">
+      <DisplayName>Verified Phone Number</DisplayName>
+      <DataType>string</DataType>
+      <DefaultPartnerClaimTypes>
+        <Protocol Name="OpenIdConnect" PartnerClaimType="phone_number" />
+      </DefaultPartnerClaimTypes>
+      <Mask Type="Simple">XXX-XXX-</Mask>
+      <UserHelpText>Your office phone number that has been verified</UserHelpText>
+    </ClaimType>
+
+    <ClaimType Id="Verified.strongAuthenticationEmailAddress">
+      <DataType>string</DataType>
+    </ClaimType>
+
+    <ClaimType Id="newPhoneNumberEntered">
+      <DisplayName>New Phone Number Entered</DisplayName>
+      <DataType>boolean</DataType>
+    </ClaimType>
+
+    <ClaimType Id="newEmailAddressEntered">
+      <DisplayName>New Email Address Entered</DisplayName>
+      <DataType>string</DataType>
+    </ClaimType>
+
+    <ClaimType Id="Verified.strongAuthenticationAppId">
+      <DisplayName>Verified Strong Authentication App Id</DisplayName>
+      <DataType>string</DataType>
+    </ClaimType>
+
+    <ClaimType Id="strongAuthenticationAppId">
+      <DisplayName>Strong Authentication App ID</DisplayName>
+      <DataType>string</DataType>
+    </ClaimType>
+
+    <ClaimType Id="newAppIdEntered">
+      <DisplayName>New App ID Entered</DisplayName>
+      <DataType>string</DataType>
+    </ClaimType>
+
+    <ClaimType Id="appInputOrVerify">
+     <DisplayName>App Input or Verify</DisplayName>
+     <DataType>string</DataType>
+    </ClaimType>
+
+    <ClaimType Id="strongAuthenticationEmailAddress">
+      <DisplayName>Strong Authentication Email Address</DisplayName>
+      <DataType>string</DataType>
+    </ClaimType>
+
+    <ClaimType Id="userIdForMFA">
+      <DisplayName>UserId for MFA</DisplayName>
+      <DataType>string</DataType>
+    </ClaimType>
+
+    <!--TOTP claims-->
+      <ClaimType Id="emails">
+        <DisplayName>Email Addresses</DisplayName>
+        <DataType>stringCollection</DataType>
+        <AdminHelpText>Email addresses of the user.</AdminHelpText>
+        <UserHelpText>Your email addresses.</UserHelpText>
+      </ClaimType>
+
+      <ClaimType Id="ReadOnlyEmail">
+        <DisplayName>ReadOnlyEmail</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>Add help text here</UserHelpText>
+        <UserInputType>Readonly</UserInputType>
+      </ClaimType>
+
+      <ClaimType Id="totpIdentifier">
+        <DisplayName>UserId, Phone number or Email which can present the user's identity</DisplayName>
+        <DataType>string</DataType>
+        <AdminHelpText>UserId, Phone number or Email which can be used to create QR code identity.</AdminHelpText>
+        <UserInputType>Paragraph</UserInputType>
+      </ClaimType>
+
+      <ClaimType Id="numberOfAvailableDevices">
+        <DisplayName>Number of available devices:</DisplayName>
+        <DataType>string</DataType>
+        <UserInputType>Paragraph</UserInputType>
+      </ClaimType>
+
+      <ClaimType Id="secretKey">
+        <DisplayName>If you cant't scan the image, enter the Secret Key:</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>QR code secret</UserHelpText>
+        <UserInputType>Paragraph</UserInputType>
+      </ClaimType>
+
+      <ClaimType Id="otpCode">
+        <DisplayName>Enter your code</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>Enter the 6-digit verification code generated by the the Authenticator app in the box</UserHelpText>
+        <UserInputType>TextBox</UserInputType>
+        <Restriction>
+          <Pattern RegularExpression="^[0-9]{6}$" HelpText="Enter the 6-digit verification code generated by the the Authenticator app in the box" />
+        </Restriction>
+      </ClaimType>
+
+      <ClaimType Id="issuer">
+        <DisplayName>Issuer</DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
+
+      <ClaimType Id="uriLabel">
+        <DisplayName>Uri Label</DisplayName>
+        <DataType>string</DataType>
+      </ClaimType>
+
+      <ClaimType Id="qrCodeContent">
+        <DisplayName>QR Code Text</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>QR code text</UserHelpText>
+        <UserInputType>Paragraph</UserInputType>
+      </ClaimType>
+
+      <ClaimType Id="UserId">
+        <DisplayName>Username</DisplayName>
+        <DataType>string</DataType>
+        <AdminHelpText />
+        <UserHelpText>Your username.</UserHelpText>
+        <UserInputType>TextBox</UserInputType>
+        <Restriction>
+          <Pattern RegularExpression="^[a-zA-Z0-9]+[a-zA-Z0-9_-]*$" HelpText="The username you have provided is not valid. It must begin with an alphabetical character or number, and can only contain alphanumeric characters and the following symbols: _ -" />
+        </Restriction>
+      </ClaimType>
+
+      <ClaimType Id="QrCodeScanInstruction">
+        <DisplayName>Once you've downloaded the Authenticator app, you can use any of the methods below to continue with enrollment.</DisplayName>
+        <DataType>string</DataType>
+        <UserInputType>Paragraph</UserInputType>
+      </ClaimType>
+
+      <ClaimType Id="QrCodeVerifyInstruction">
+        <DisplayName>Enter the verification code from your authenticator app​.</DisplayName>
+        <DataType>string</DataType>
+        <UserInputType>Paragraph</UserInputType>
+      </ClaimType>
+
+      <ClaimType Id="phoneNumber">
+        <DisplayName>Phone Number</DisplayName>
+        <DataType>string</DataType>
+        <UserHelpText>Your telephone number</UserHelpText>
+      </ClaimType>
+
+      <ClaimType Id="errorCode">
+        <DisplayName>errorCode</DisplayName>
+        <DataType>string</DataType>
+        <AdminHelpText>errorCode</AdminHelpText>
+        <UserHelpText>errorCode</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="errorMessage">
+        <DisplayName>errorMessage</DisplayName>
+        <DataType>string</DataType>
+        <AdminHelpText>errorMessage</AdminHelpText>
+        <UserHelpText>errorMessage</UserHelpText>
+      </ClaimType>
+      <ClaimType Id="extension_mfaByPhoneOrEmail">
+        <DisplayName>Please select your preferred MFA method</DisplayName>
+        <DataType>string</DataType>
+        <UserInputType>RadioSingleSelect</UserInputType>
+        <Restriction>
+          <Enumeration Text="Phone" Value="phone" SelectByDefault="true" />
+          <Enumeration Text="Email " Value="email" SelectByDefault="false" />
+          <Enumeration Text="Authenticator " Value="authenticator" SelectByDefault="false" />
+        </Restriction>
+      </ClaimType>
+      <!-- Demo: Stores the user authyId in Azure Active Directory user account
+      This authyId is generated by the REST API-->
+      <ClaimType Id="extension_authyId">
+        <DisplayName>Authy Id</DisplayName>
+        <DataType>string</DataType>
+        <UserInputType>Readonly</UserInputType>
+      </ClaimType>
+
+    </ClaimsSchema>
+    <ClaimsTransformations>
+    <ClaimsTransformation Id="GetLocalizedStringsForEmail" TransformationMethod="GetLocalizedStringsTransformation">
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="subject" TransformationClaimType="email_subject" />
+          <OutputClaim ClaimTypeReferenceId="message" TransformationClaimType="email_message" />
+          <OutputClaim ClaimTypeReferenceId="codeIntro" TransformationClaimType="email_code" />
+          <OutputClaim ClaimTypeReferenceId="signature" TransformationClaimType="email_signature" />
+        </OutputClaims>
+      </ClaimsTransformation>
+    <ClaimsTransformation Id="GenerateEmailRequestBody" TransformationMethod="GenerateJson">
+  <InputClaims>
+    <InputClaim ClaimTypeReferenceId="email" TransformationClaimType="personalizations.0.to.0.email" />
+    <InputClaim ClaimTypeReferenceId="subject" TransformationClaimType="personalizations.0.dynamic_template_data.subject" />
+    <InputClaim ClaimTypeReferenceId="otp" TransformationClaimType="personalizations.0.dynamic_template_data.otp" />
+    <InputClaim ClaimTypeReferenceId="email" TransformationClaimType="personalizations.0.dynamic_template_data.email" />
+    <InputClaim ClaimTypeReferenceId="message" TransformationClaimType="personalizations.0.dynamic_template_data.message" />
+    <InputClaim ClaimTypeReferenceId="codeIntro" TransformationClaimType="personalizations.0.dynamic_template_data.codeIntro" />
+    <InputClaim ClaimTypeReferenceId="signature" TransformationClaimType="personalizations.0.dynamic_template_data.signature" />
+  </InputClaims>
+      <InputParameters>
+        <!-- Update the template_id value with the ID of your SendGrid template. -->
+        <InputParameter Id="template_id" DataType="string" Value="d-4609864c575b44f580830537c3ba64fe"/>
+        <InputParameter Id="from.email" DataType="string" Value="neo55549@wp.pl"/>
+        <!-- Update with a subject line appropriate for your organization. -->
+        <InputParameter Id="personalizations.0.dynamic_template_data.subject" DataType="string" Value="Volturi account email verification code"/>
+      </InputParameters>
+      <OutputClaims>
+        <OutputClaim ClaimTypeReferenceId="emailRequestBody" TransformationClaimType="outputClaim"/>
+      </OutputClaims>
+    </ClaimsTransformation>
+    <ClaimsTransformation Id="CreateUserIdForMFA" TransformationMethod="FormatStringClaim">
+      <InputClaims>
+        <InputClaim ClaimTypeReferenceId="objectId" TransformationClaimType="inputClaim" />
+      </InputClaims>
+      <InputParameters>
+        <InputParameter Id="stringFormat" DataType="string" Value="{0}@{RelyingPartyTenantId}" />
+      </InputParameters>
+      <OutputClaims>
+        <OutputClaim ClaimTypeReferenceId="userIdForMFA" TransformationClaimType="outputClaim" />
+      </OutputClaims>
+    </ClaimsTransformation>
+
+    <!-- Create a TOPT secret key-->
+      <ClaimsTransformation Id="CreateSecret" TransformationMethod="CreateOtpSecret">
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="secretKey" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+
+      <!-- Create the TOTP issuer name. The issuer name is your tenant name, such as "Contoso demo" -->
+      <ClaimsTransformation Id="CreateIssuer" TransformationMethod="CreateStringClaim">
+        <InputParameters>
+          <InputParameter Id="value" DataType="string" Value="{AuthenticatorIssuer}" />
+        </InputParameters>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="issuer" TransformationClaimType="createdClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+
+      <!-- Create the TOTP URI label. The label is a combination of the totpIdentifier and the issuer name:
+           For example, Contoso demo:emily@fabrikam.com-->
+      <ClaimsTransformation Id="CreateUriLabel" TransformationMethod="FormatStringMultipleClaims">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="issuer" TransformationClaimType="inputClaim1" />
+          <InputClaim ClaimTypeReferenceId="totpIdentifier" TransformationClaimType="inputClaim2" />
+        </InputClaims>
+        <InputParameters>
+          <InputParameter Id="stringFormat" DataType="string" Value="{0}:{1}" />
+        </InputParameters>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="uriLabel" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+
+      <!-- Create the TOTP URI. The label is a combination of the CreateUriLabel and the secret key:
+      For example, otpauth://totp/Contoso%20demo:emily@fabrikam.com?secret=fay2lj7ynpntjgqa&issuer=Contoso+demo
+      This URI is later converted into a QR code that is presented to the user-->
+      <ClaimsTransformation Id="CreateUriString" TransformationMethod="BuildUri">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="uriLabel" TransformationClaimType="path" />
+          <InputClaim ClaimTypeReferenceId="secretKey" TransformationClaimType="query.secret" />
+        </InputClaims>
+        <InputParameters>
+          <InputParameter Id="scheme" DataType="string" Value="otpauth" />
+          <InputParameter Id="host" DataType="string" Value="totp" />
+          <InputParameter Id="query.issuer" DataType="string" Value="{AuthenticatorIssuer}" />
+        </InputParameters>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="qrCodeContent" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+
+      <!-- Copy the UserId to the totpIdentifier -->
+      <ClaimsTransformation Id="UserIdToLogonIdentifier" TransformationMethod="CopyClaim">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="UserId" TransformationClaimType="inputClaim" />
+        </InputClaims>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="totpIdentifier" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+
+      <!-- Copy the signInName to the totpIdentifier -->
+      <ClaimsTransformation Id="SignInNameToTotpIdentifier" TransformationMethod="CopyClaim">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="signInName" TransformationClaimType="inputClaim" />
+        </InputClaims>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="totpIdentifier" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+
+      <!-- Copy the email to the totpIdentifier -->
+      <ClaimsTransformation Id="EmailToTotpIdentifier" TransformationMethod="CopyClaim">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="email" TransformationClaimType="inputClaim" />
+        </InputClaims>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="totpIdentifier" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+
+      <!--TOTP Claim Transforms-->
+      <ClaimsTransformation Id="GetEmailFromReadOnlyEmail" TransformationMethod="CopyClaim">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="ReadOnlyEmail" TransformationClaimType="inputClaim" />
+        </InputClaims>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="email" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+
+      <ClaimsTransformation Id="GetEmailFromEmails" TransformationMethod="GetSingleItemFromStringCollection">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="emails" TransformationClaimType="collection" />
+        </InputClaims>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="ReadOnlyEmail" TransformationClaimType="extractedItem" />
+        </OutputClaims>
+      </ClaimsTransformation>
+
+      <!--Claim if Phone SignIn is used-->
+      <ClaimsTransformation Id="PhoneNumberIdToLogonIdentifier" TransformationMethod="CopyClaim">
+      <InputClaims>
+        <InputClaim ClaimTypeReferenceId="phoneNumber" TransformationClaimType="inputClaim" />
+      </InputClaims>
+      <OutputClaims>
+        <OutputClaim ClaimTypeReferenceId="totpIdentifier" TransformationClaimType="outputClaim" />
+      </OutputClaims>
+    </ClaimsTransformation>
+      <ClaimsTransformation Id="GenerateErrorCode" TransformationMethod="CreateStringClaim">
+        <InputParameters>
+          <InputParameter Id="value" DataType="string" Value="Error_001" />
+        </InputParameters>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="errorCode" TransformationClaimType="createdClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+      <ClaimsTransformation Id="GenerateErrorMessage" TransformationMethod="CreateStringClaim">
+        <InputParameters>
+          <InputParameter Id="value" DataType="string" Value="Insert error description." />
+        </InputParameters>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="errorMessage" TransformationClaimType="createdClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+      <ClaimsTransformation Id="CopySignInNameToReadOnly" TransformationMethod="FormatStringClaim">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="signInName" TransformationClaimType="inputClaim" />
+        </InputClaims>
+        <InputParameters>
+          <InputParameter Id="stringFormat" DataType="string" Value="{0}" />
+        </InputParameters>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="readOnlyEmail" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+      <ClaimsTransformation Id="CopyEmailToReadOnly" TransformationMethod="FormatStringClaim">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="email" TransformationClaimType="inputClaim" />
+        </InputClaims>
+        <InputParameters>
+          <InputParameter Id="stringFormat" DataType="string" Value="{0}" />
+        </InputParameters>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="readOnlyEmail" TransformationClaimType="outputClaim" />
+        </OutputClaims>
+      </ClaimsTransformation>
+  </ClaimsTransformations>
+
+    <ContentDefinitions>
+      <ContentDefinition Id="api.signuporsignin">
+       <!-- <LoadUri>https://lukaszbranding.blob.core.windows.net/myhtml/custom.html</LoadUri> -->
+        <DataUri>urn:com:microsoft:aad:b2c:elements:contract:unifiedssp:2.1.5</DataUri>
+        <LocalizedResourcesReferences MergeBehavior="Prepend">
+          <LocalizedResourcesReference Language="en" LocalizedResourcesReferenceId="en" />
+          <LocalizedResourcesReference Language="es" LocalizedResourcesReferenceId="es" />
+          <LocalizedResourcesReference Language="pl" LocalizedResourcesReferenceId="pl" />
+        </LocalizedResourcesReferences>
+      </ContentDefinition>
+      <ContentDefinition Id="api.localaccountsignup">
+      <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.1.2</DataUri>
+      <LocalizedResourcesReferences MergeBehavior="Prepend">
+        <LocalizedResourcesReference Language="en" LocalizedResourcesReferenceId="api.custom-email.en" />
+        <LocalizedResourcesReference Language="es" LocalizedResourcesReferenceId="api.custom-email.es" />
+        <LocalizedResourcesReference Language="pl" LocalizedResourcesReferenceId="api.custom-email.pl" />
+      </LocalizedResourcesReferences>
+    </ContentDefinition>
+    <ContentDefinition Id="api.localaccountpasswordreset">
+      <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.1.2</DataUri>
+        <LocalizedResourcesReferences MergeBehavior="Prepend">
+        <LocalizedResourcesReference Language="en" LocalizedResourcesReferenceId="api.custom-email.en" />
+        <LocalizedResourcesReference Language="es" LocalizedResourcesReferenceId="api.custom-email.es" />
+        <LocalizedResourcesReference Language="pl" LocalizedResourcesReferenceId="api.custom-email.pl" />
+      </LocalizedResourcesReferences>
+    </ContentDefinition>
+    <ContentDefinition Id="api.phonefactor">
+      <LoadUri>~/tenant/templates/AzureBlue/multifactor-1.0.0.cshtml</LoadUri>
+      <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
+      <DataUri>urn:com:microsoft:aad:b2c:elements:contract:multifactor:1.2.5</DataUri>
+      <Metadata>
+        <Item Key="DisplayName">Multi-factor authentication page</Item>
+      </Metadata>
+    </ContentDefinition>
+      <ContentDefinition Id="api.selfasserted.totp">
+        <LoadUri>~/tenant/templates/AzureBlue/selfAsserted.cshtml</LoadUri>
+        <RecoveryUri>~/common/default_page_error.html</RecoveryUri>
+        <DataUri>urn:com:microsoft:aad:b2c:elements:contract:selfasserted:2.1.9</DataUri>
+        <Metadata>
+          <Item Key="DisplayName">Collect information from user page</Item>
+        </Metadata>
+        <LocalizedResourcesReferences>
+          <LocalizedResourcesReference Language="en" LocalizedResourcesReferenceId="api.selfasserted.totp.en" />
+        </LocalizedResourcesReferences>
+      </ContentDefinition>
+
+    </ContentDefinitions>
+    <Localization Enabled="true">
+    <SupportedLanguages DefaultLanguage="en" MergeBehavior="ReplaceAll">
+      <SupportedLanguage>en</SupportedLanguage>
+      <SupportedLanguage>es</SupportedLanguage>
+      <SupportedLanguage>pl</SupportedLanguage>
+    </SupportedLanguages>
+    <LocalizedResources Id="en">
+        <LocalizedStrings>
+          <LocalizedString ElementType="ClaimType" ElementId="signInName" StringId="DisplayName">Email Address</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="heading">Sign in</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="social_intro">Sign in with your social account</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="local_intro_generic">Sign in with your {0}</LocalizedString>
+          <LocalizedString ElementType="ClaimType" ElementId="password" StringId="DisplayName">Password</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="requiredField_password">Please enter your password</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="requiredField_generic">Please enter your {0}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="invalid_generic">Please enter a valid {0}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_one_link">Sign up now</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_two_links">Sign up with {0} or {1}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_three_links">Sign up with {0}, {1}, or {2}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="forgotpassword_link">Forgot your password?</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="button_signin">Sign in</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="divider_title">OR</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_intro">Don't have an account?</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="unknown_error">We are having trouble signing you in. Please try again later.</LocalizedString>
+          <!-- Uncomment the remember_me only if the keep me signed in is activated. 
+          <LocalizedString ElementType="UxElement" StringId="remember_me">Keep me signed in</LocalizedString> -->
+          <LocalizedString ElementType="ClaimsProvider" StringId="FacebookExchange">Facebook</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="ResourceOwnerFlowInvalidCredentials">Your password is incorrect.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfInvalidPassword">Your password is incorrect.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfPasswordExpired">Your password has expired.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfClaimsPrincipalDoesNotExist">We can't seem to find your account.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfOldPasswordUsed">Looks like you used an old password.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="DefaultMessage">Invalid username or password.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfUserAccountDisabled">Your account has been locked. Contact your support person to unlock it, then try again.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfUserAccountLocked">Your account is temporarily locked to prevent unauthorized use. Try again later.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="AADRequestsThrottled">There are too many requests at this moment. Please wait for some time and try again.</LocalizedString>
+        </LocalizedStrings>
+      </LocalizedResources>
+  <LocalizedResources Id="es">
+    <LocalizedStrings>
+          <LocalizedString ElementType="ClaimType" ElementId="signInName" StringId="DisplayName">Dirección de correo electrónico</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="heading">Iniciar sesión</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="social_intro">Inicie sesión con su cuenta social</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="local_intro_generic">Inicia sesión con tu {0}</LocalizedString>
+          <LocalizedString ElementType="ClaimType" ElementId="password" StringId="DisplayName">Contraseña</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="requiredField_password">Por favor, introduzca su contraseña</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="requiredField_generic">Por favor ingrese su {0}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="invalid_generic">Introduzca un {0} válido</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_one_link">Regístrate ahora</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_two_links">Regístrese con {0} o {1}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_three_links">Regístrese con {0}, {1} o {2}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="forgotpassword_link">Olvidaste tu contraseña?</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="button_signin">Iniciar sesión</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="divider_title">O</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_intro">No tienes una cuenta?</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="unknown_error">Estamos teniendo problemas para iniciar sesión. Vuelva a intentarlo más tarde.</LocalizedString>
+          <!-- Uncomment the remember_me only if the keep me signed in is activated. 
+          <LocalizedString ElementType="UxElement" StringId="remember_me">Mantenerme registrado</LocalizedString> -->
+          <LocalizedString ElementType="ClaimsProvider" StringId="FacebookExchange">Facebook</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="ResourceOwnerFlowInvalidCredentials">Tu contraseña es incorrecta.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfInvalidPassword">Tu contraseña es incorrecta.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfPasswordExpired">Tu contraseña ha expirado.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfClaimsPrincipalDoesNotExist">Parece que no podemos encontrar su cuenta.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfOldPasswordUsed">Parece que usaste una contraseña antigua.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="DefaultMessage">Usuario o contraseña invalido.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfUserAccountDisabled">Su cuenta ha sido bloqueada. Póngase en contacto con su persona de soporte para desbloquearlo, luego intente nuevamente.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfUserAccountLocked">Su cuenta está bloqueada temporalmente para evitar el uso no autorizado. Vuelva a intentarlo más tarde.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="AADRequestsThrottled">Hay demasiadas solicitudes en este momento. Espera un momento y vuelve a intentarlo.</LocalizedString>
+        </LocalizedStrings>   
+  </LocalizedResources>
+  <LocalizedResources Id="pl">
+        <LocalizedStrings>
+          <LocalizedString ElementType="ClaimType" ElementId="signInName" StringId="DisplayName">Adres email</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="heading">Zaloguj się</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="social_intro">Zaloguj się przy użyciu konta social</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="local_intro_generic">Zaloguj się z {0}</LocalizedString>
+          <LocalizedString ElementType="ClaimType" ElementId="password" StringId="DisplayName">Hasło</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="requiredField_password">Podaj swoje hasło</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="requiredField_generic">Wpisz swój {0}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="invalid_generic">Wprowadź prawidłowy {0}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_one_link">Zarejestruj się teraz</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_two_links">Zarejestruj się za pomocą {0} lub {1}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_three_links">Zarejestruj się za pomocą {0}, {1}, lub {2}</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="forgotpassword_link">Zapomniałeś hasła?</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="button_signin">Zaloguj się</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="divider_title">Lub</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="createaccount_intro">Nie masz konta?</LocalizedString>
+          <LocalizedString ElementType="UxElement" StringId="unknown_error">Mamy problem z zalogowaniem się. Spróbuj ponownie później.</LocalizedString>
+          <!-- Uncomment the remember_me only if the keep me signed in is activated. 
+          <LocalizedString ElementType="UxElement" StringId="remember_me">Nie wylogowuj mnie</LocalizedString> -->
+          <LocalizedString ElementType="ClaimsProvider" StringId="FacebookExchange">Facebook</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="ResourceOwnerFlowInvalidCredentials">Twoje hasło jest niepoprawne.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfInvalidPassword">Twoje hasło jest niepoprawne.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfPasswordExpired">Twoje hasło wygasło.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfClaimsPrincipalDoesNotExist">Nie możemy znaleźć Twojego konta.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfOldPasswordUsed">Wygląda na to, że użyłeś starego hasła.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="DefaultMessage">Nieprawidłowa nazwa użytkownika lub hasło.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfUserAccountDisabled">Twoje konto zostało zablokowane. Skontaktuj się z pomocą techniczną, aby ją odblokować, a następnie spróbuj ponownie.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="UserMessageIfUserAccountLocked">Twoje konto jest tymczasowo zablokowane, aby zapobiec nieautoryzowanemu użyciu. Spróbuj ponownie później.</LocalizedString>
+          <LocalizedString ElementType="ErrorMessage" StringId="AADRequestsThrottled">W tej chwili jest zbyt wiele próśb. Poczekaj chwilę i spróbuj ponownie.</LocalizedString>
+        </LocalizedStrings>
+      </LocalizedResources>
+      <LocalizedResources Id="api.custom-email.en">
+      <LocalizedStrings>
+        <!--Email template parameters-->
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_subject">Contoso account email verification code</LocalizedString>
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_message">Thanks for validating the account</LocalizedString>
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_code">Your code is</LocalizedString>
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_signature">Sincerely</LocalizedString>
+      </LocalizedStrings>
+    </LocalizedResources>
+    <LocalizedResources Id="api.custom-email.es">
+      <LocalizedStrings>
+        <!--Email template parameters-->
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_subject">Código de verificación del correo electrónico de la cuenta de Contoso</LocalizedString>
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_message">Gracias por comprobar la cuenta de </LocalizedString>
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_code">Su código es</LocalizedString>
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_signature">Sinceramente</LocalizedString>
+      </LocalizedStrings>
+    </LocalizedResources>
+    <LocalizedResources Id="api.custom-email.pl">
+      <LocalizedStrings>
+        <!--Email template parameters-->
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_subject">Kod weryfikacyjny konta Volturi</LocalizedString>
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_message">Dziękujemy za walidacje konta</LocalizedString>
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_code">Twój kod</LocalizedString>
+        <LocalizedString ElementType="GetLocalizedStringsTransformationClaimType" StringId="email_signature">Z poważaniem</LocalizedString>
+      </LocalizedStrings>
+    </LocalizedResources>
+    <LocalizedResources Id="api.selfasserted.totp.en">
+        <LocalizedStrings>
+          <LocalizedString ElementType="DisplayControl" ElementId="authenticatorAppIconControl" StringId="title_text">Download the Microsoft Authenticator using the download links for iOS and Android or use any other authenticator app of your choice.</LocalizedString>
+          <LocalizedString ElementType="DisplayControl" ElementId="authenticatorAppIconControl" StringId="instruction_text">Once you&#39;ve downloaded the Authenticator app, you can use any of the methods below to continue with enrollment.</LocalizedString>
+          <LocalizedString ElementType="ClaimType" ElementId="QrCodeScanInstruction" StringId="DisplayName">Once you've downloaded the Authenticator app, you can use any of the methods below to continue with enrollment.</LocalizedString>
+          <LocalizedString ElementType="DisplayControl" ElementId="totpQrCodeControl" StringId="title_text">Scan the QR code</LocalizedString>
+          <LocalizedString ElementType="DisplayControl" ElementId="totpQrCodeControl" StringId="info_msg">You can download the Microsoft Authenticator app or use any other authenticator app of your choice.</LocalizedString>
+          <LocalizedString ElementType="DisplayControl" ElementId="totpQrCodeControl" StringId="link_text">Can&#39;t scan? Try this</LocalizedString>
+          <LocalizedString ElementType="DisplayControl" ElementId="authenticatorInfoControl" StringId="title_text">Enter the account details manually</LocalizedString>
+          <LocalizedString ElementType="DisplayControl" ElementId="authenticatorInfoControl" StringId="account_name">Account Name:</LocalizedString>
+          <LocalizedString ElementType="DisplayControl" ElementId="authenticatorInfoControl" StringId="display_prefix">Secret</LocalizedString>
+          <LocalizedString ElementType="DisplayControl" ElementId="authenticatorInfoControl" StringId="collapse_text">Still having trouble?</LocalizedString>
+
+          <!-- Verification -->
+          <LocalizedString ElementType="ClaimType" ElementId="QrCodeVerifyInstruction" StringId="DisplayName">Enter the verification code from your authenticator app​.</LocalizedString>
+          <LocalizedString ElementType="ClaimType" ElementId="otpCode" StringId="DisplayName">Enter your code.</LocalizedString>
+          <!-- <LocalizedString ElementType="UxElement" StringId="button_continue">Verify</LocalizedString> -->
+        </LocalizedStrings>
+      </LocalizedResources>
+  </Localization>
+  <DisplayControls>
+    <DisplayControl Id="emailVerificationControl" UserInterfaceControlType="VerificationControl">
+      <DisplayClaims>
+        <DisplayClaim ClaimTypeReferenceId="email" Required="true" />
+        <DisplayClaim ClaimTypeReferenceId="verificationCode" ControlClaimType="VerificationCode" Required="true" />
+      </DisplayClaims>
+      <OutputClaims>
+        <OutputClaim ClaimTypeReferenceId="email" />
+      </OutputClaims>
+      <Actions>
+        <Action Id="SendCode">
+          <ValidationClaimsExchange>
+            <ValidationClaimsExchangeTechnicalProfile TechnicalProfileReferenceId="GenerateOtp" />
+            <ValidationClaimsExchangeTechnicalProfile TechnicalProfileReferenceId="SendOtp" />
+          </ValidationClaimsExchange>
+        </Action>
+        <Action Id="VerifyCode">
+          <ValidationClaimsExchange>
+            <ValidationClaimsExchangeTechnicalProfile TechnicalProfileReferenceId="VerifyOtp" />
+          </ValidationClaimsExchange>
+        </Action>
+      </Actions>
+    </DisplayControl>
+    <!-- Render the authenticator apps icon. -->
+      <DisplayControl Id="authenticatorAppIconControl" UserInterfaceControlType="AuthenticatorAppIconControl" />
+
+      <!-- Render the QR code. It takes the URI (qrCodeContent) input claim and renders it as a QR code-->
+      <DisplayControl Id="totpQrCodeControl" UserInterfaceControlType="QrCodeControl">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="qrCodeContent" />
+        </InputClaims>
+        <DisplayClaims>
+          <DisplayClaim ClaimTypeReferenceId="qrCodeContent" ControlClaimType="QrCodeContent" />
+        </DisplayClaims>
+      </DisplayControl>
+
+      <!-- Render the TOTP information. It takes the totpIdentifier and the secretKey input claims and renders as a plan text-->
+      <DisplayControl Id="authenticatorInfoControl" UserInterfaceControlType="AuthenticatorInfoControl">
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="totpIdentifier" />
+          <InputClaim ClaimTypeReferenceId="secretKey" />
+        </InputClaims>
+        <DisplayClaims>
+          <DisplayClaim ClaimTypeReferenceId="totpIdentifier" />
+          <DisplayClaim ClaimTypeReferenceId="secretKey" />
+        </DisplayClaims>
+      </DisplayControl>
+  </DisplayControls>
+  </BuildingBlocks>
+  <ClaimsProviders>
+  <ClaimsProvider>
+    <DisplayName>PhoneFactor</DisplayName>
+    <TechnicalProfiles>
+      <TechnicalProfile Id="PhoneFactor-InputOrVerify">
+        <DisplayName>PhoneFactor</DisplayName>
+        <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.PhoneFactorProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+        <Metadata>
+          <Item Key="ContentDefinitionReferenceId">api.phonefactor</Item>
+          <Item Key="ManualPhoneNumberEntryAllowed">true</Item>
+        </Metadata>
+        <CryptographicKeys>
+          <Key Id="issuer_secret" StorageReferenceId="B2C_1A_TokenSigningKeyContainer" />
+        </CryptographicKeys>
+        <InputClaimsTransformations>
+          <InputClaimsTransformation ReferenceId="CreateUserIdForMFA" />
+        </InputClaimsTransformations>
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="userIdForMFA" PartnerClaimType="UserId" />
+          <InputClaim ClaimTypeReferenceId="strongAuthenticationPhoneNumber" />
+          <InputClaim ClaimTypeReferenceId="appInputOrVerify" DefaultValue="input" AlwaysUseDefaultValue="true" />
+        </InputClaims>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="Verified.strongAuthenticationPhoneNumber" PartnerClaimType="Verified.OfficePhone" />
+          <OutputClaim ClaimTypeReferenceId="newPhoneNumberEntered" PartnerClaimType="newPhoneNumberEntered" />
+        </OutputClaims>
+        <UseTechnicalProfileForSessionManagement ReferenceId="SM-MFA" />
+      </TechnicalProfile>
+      <TechnicalProfile Id="Email-InputOrVerify">
+    <DisplayName>Email Input or Verify</DisplayName>
+    <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.EmailProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Metadata>
+      <Item Key="ContentDefinitionReferenceId">api.email</Item>
+      <Item Key="ManualEmailEntryAllowed">true</Item>
+    </Metadata>
+    <CryptographicKeys>
+      <Key Id="issuer_secret" StorageReferenceId="B2C_1A_TokenSigningKeyContainer" />
+    </CryptographicKeys>
+    <InputClaimsTransformations>
+      <InputClaimsTransformation ReferenceId="CreateUserIdForMFA" />
+    </InputClaimsTransformations>
+    <InputClaims>
+      <InputClaim ClaimTypeReferenceId="userIdForMFA" PartnerClaimType="UserId" />
+      <InputClaim ClaimTypeReferenceId="strongAuthenticationEmailAddress" PartnerClaimType="Email" />
+      <InputClaim ClaimTypeReferenceId="appInputOrVerify" DefaultValue="input" AlwaysUseDefaultValue="true" />
+    </InputClaims>
+    <OutputClaims>
+      <OutputClaim ClaimTypeReferenceId="Verified.strongAuthenticationEmailAddress" PartnerClaimType="Verified.Email" />
+      <OutputClaim ClaimTypeReferenceId="newEmailAddressEntered" PartnerClaimType="newEmailAddressEntered" />
+    </OutputClaims>
+    <UseTechnicalProfileForSessionManagement ReferenceId="SM-MFA" />
+  </TechnicalProfile>
+  <TechnicalProfile Id="appInputOrVerify">
+  <DisplayName>App Input or Verify</DisplayName>
+  <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SomeProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  <Metadata>
+    <Item Key="ContentDefinitionReferenceId">api.app</Item>
+    <Item Key="ManualAppEntryAllowed">true</Item>
+  </Metadata>
+  <CryptographicKeys>
+    <Key Id="issuer_secret" StorageReferenceId="B2C_1A_TokenSigningKeyContainer" />
+  </CryptographicKeys>
+  <InputClaimsTransformations>
+    <InputClaimsTransformation ReferenceId="CreateUserIdForMFA" />
+  </InputClaimsTransformations>
+  <InputClaims>
+    <InputClaim ClaimTypeReferenceId="userIdForMFA" PartnerClaimType="UserId" />
+    <InputClaim ClaimTypeReferenceId="strongAuthenticationAppId" PartnerClaimType="AppId" />
+    <InputClaim ClaimTypeReferenceId="appInputOrVerify" DefaultValue="input" AlwaysUseDefaultValue="true" />
+  </InputClaims>
+  <OutputClaims>
+    <OutputClaim ClaimTypeReferenceId="Verified.strongAuthenticationAppId" PartnerClaimType="Verified.AppId" />
+    <OutputClaim ClaimTypeReferenceId="newAppIdEntered" PartnerClaimType="newAppIdEntered" />
+  </OutputClaims>
+  <UseTechnicalProfileForSessionManagement ReferenceId="SM-MFA" />
+</TechnicalProfile>
+    </TechnicalProfiles>
+  </ClaimsProvider>
+  <ClaimsProvider>
+    <DisplayName>One time password technical profiles</DisplayName>
+    <TechnicalProfiles>
+      <TechnicalProfile Id="GenerateOtp">
+        <DisplayName>Generate one time password</DisplayName>
+        <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.OneTimePasswordProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+        <Metadata>
+          <Item Key="Operation">GenerateCode</Item>
+          <Item Key="CodeExpirationInSeconds">600</Item>
+          <Item Key="CodeLength">6</Item>
+          <Item Key="CharacterSet">0-9</Item>
+          <Item Key="NumRetryAttempts">5</Item>
+          <Item Key="NumCodeGenerationAttempts">10</Item>
+          <Item Key="ReuseSameCode">false</Item>
+        </Metadata>
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="email" PartnerClaimType="identifier" />
+        </InputClaims>
+        <OutputClaims>
+          <OutputClaim ClaimTypeReferenceId="otp" PartnerClaimType="otpGenerated" />
+        </OutputClaims>
+      </TechnicalProfile>
+
+      <TechnicalProfile Id="VerifyOtp">
+        <DisplayName>Verify one time password</DisplayName>
+        <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.OneTimePasswordProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+        <Metadata>
+          <Item Key="Operation">VerifyCode</Item>
+        </Metadata>
+        <InputClaims>
+          <InputClaim ClaimTypeReferenceId="email" PartnerClaimType="identifier" />
+          <InputClaim ClaimTypeReferenceId="verificationCode" PartnerClaimType="otpToVerify" />
+        </InputClaims>
+      </TechnicalProfile>
+     </TechnicalProfiles>
+  </ClaimsProvider>
+
+  <!--Start TOTP-->
+    <ClaimsProvider>
+      <DisplayName>TOTP</DisplayName>
+      <TechnicalProfiles>
+
+        <!-- Begin the TOTP verification process. 
+             This technical profile is called right before the AzureMfa-VerifyOTP technical profile-->
+        <TechnicalProfile Id="AzureMfa-BeginVerifyOTP">
+          <DisplayName>Create Device</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.AzureMfaProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="Operation">BeginVerifyOTP</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="secretKey" />
+            <InputClaim ClaimTypeReferenceId="objectId" />
+            <InputClaim ClaimTypeReferenceId="userPrincipalName" />
+          </InputClaims>
+        </TechnicalProfile>
+
+        <!-- Verify the TOTP verification process. 
+             This technical profile is called immediately after the AzureMfa-BeginVerifyOTP technical profile-->
+        <TechnicalProfile Id="AzureMfa-VerifyOTP">
+          <DisplayName>Verify OTP</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.AzureMfaProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="Operation">VerifyOTP</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="otpCode" />
+          </InputClaims>
+        </TechnicalProfile>
+
+        <!-- Check the number of devices available for the user. 
+             If the number of available devices is zero it indicates the user hasn't enrolled yet -->
+        <TechnicalProfile Id="AzureMfa-GetAvailableDevices">
+          <DisplayName>Get Available Devices</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.AzureMfaProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="Operation">GetAvailableDevices</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="userPrincipalName" />
+          </InputClaims>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="numberOfAvailableDevices" />
+          </OutputClaims>
+        </TechnicalProfile>
+
+        <!-- TOTP session manager-->
+        <TechnicalProfile Id="SM-MFA-TOTP">
+          <DisplayName>Session Mananagement Provider</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.SSO.DefaultSSOSessionProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <PersistedClaims>
+            <PersistedClaim ClaimTypeReferenceId="totpIdentifier" />
+            <PersistedClaim ClaimTypeReferenceId="issuer" />
+          </PersistedClaims>
+        </TechnicalProfile>
+
+        <!-- Self-asserted technical profile that asks the user to enroll to the TOTP MFA. The technical profile:
+              1) Creates the TOTP secret
+              2) Sets the issuer name and the URI
+              3) Renders the QR code and the authentication URI
+             -->
+        <TechnicalProfile Id="EnableOTPAuthentication">
+          <DisplayName>Sign up with Authenticator app</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="ContentDefinitionReferenceId">api.selfasserted.totp</Item>
+            <Item Key="language.button_continue">Continue</Item>
+          </Metadata>
+          <CryptographicKeys>
+            <Key Id="issuer_secret" StorageReferenceId="B2C_1A_TokenSigningKeyContainer" />
+          </CryptographicKeys>
+          <InputClaimsTransformations>
+            <InputClaimsTransformation ReferenceId="CreateSecret" />
+            <InputClaimsTransformation ReferenceId="CreateIssuer" />
+            <InputClaimsTransformation ReferenceId="CreateUriLabel" />
+            <InputClaimsTransformation ReferenceId="CreateUriString" />
+          </InputClaimsTransformations>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="qrCodeContent" />
+            <InputClaim ClaimTypeReferenceId="secretKey" />
+          </InputClaims>
+          <DisplayClaims>
+            <DisplayClaim DisplayControlReferenceId="authenticatorAppIconControl" />
+            <DisplayClaim ClaimTypeReferenceId="QrCodeScanInstruction" />
+            <DisplayClaim DisplayControlReferenceId="totpQrCodeControl" />
+            <DisplayClaim DisplayControlReferenceId="authenticatorInfoControl" />
+          </DisplayClaims>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="objectId" />
+            <OutputClaim ClaimTypeReferenceId="secretKey" />
+          </OutputClaims>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-MFA-TOTP" />
+        </TechnicalProfile>
+
+        <!-- Self-asserted technical profile that verifies the TOTP-->
+        <TechnicalProfile Id="OTPVerification">
+          <DisplayName>Sign in with Authenticator app</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="ContentDefinitionReferenceId">api.selfasserted.totp</Item>
+            <Item Key="language.button_continue">Verify</Item>
+          </Metadata>
+          <CryptographicKeys>
+            <Key Id="issuer_secret" StorageReferenceId="B2C_1A_TokenSigningKeyContainer" />
+          </CryptographicKeys>
+          <InputClaims></InputClaims>
+          <DisplayClaims>
+            <DisplayClaim ClaimTypeReferenceId="QrCodeVerifyInstruction" />
+            <DisplayClaim ClaimTypeReferenceId="otpCode" Required="true" />
+          </DisplayClaims>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="objectId" />
+            <OutputClaim ClaimTypeReferenceId="otpCode" Required="true" />
+          </OutputClaims>
+          <ValidationTechnicalProfiles>
+            <ValidationTechnicalProfile ReferenceId="AzureMfa-BeginVerifyOTP" />
+            <ValidationTechnicalProfile ReferenceId="AzureMfa-VerifyOTP" />
+          </ValidationTechnicalProfiles>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-MFA-TOTP" />
+        </TechnicalProfile>
+
+        <!-- Set the number of devices to 0 (default value) -->
+        <TechnicalProfile Id="SetTotpDefaultValue">
+          <DisplayName>Set Totp Default Values</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.ClaimsTransformationProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="numberOfAvailableDevices" DefaultValue="0" />
+          </OutputClaims>
+        </TechnicalProfile>
+
+        <!-- Copy the UserId to the totpIdentifier -->
+        <TechnicalProfile Id="CreateTotpIdentifier-UserId">
+          <DisplayName>Set Totp Default Values</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.ClaimsTransformationProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="totpIdentifier" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="UserIdToLogonIdentifier" />
+          </OutputClaimsTransformations>
+        </TechnicalProfile>
+
+        <!-- Copy the SignInName to the totpIdentifier -->
+        <TechnicalProfile Id="CreateTotpIdentifier-SignInName">
+          <DisplayName>Set Totp Default Values</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.ClaimsTransformationProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="totpIdentifier" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="SignInNameToTotpIdentifier" />
+          </OutputClaimsTransformations>
+        </TechnicalProfile>
+
+        <!-- Copy the Email to the totpIdentifier -->
+        <TechnicalProfile Id="CreateTotpIdentifier-Email">
+          <DisplayName>Set Totp Default Values</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.ClaimsTransformationProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="totpIdentifier" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="EmailToTotpIdentifier" />
+          </OutputClaimsTransformations>
+        </TechnicalProfile>
+
+        <TechnicalProfile Id="GetEmailFromReadOnlyEmail">
+          <DisplayName>Get Email From ReadOnlyEmail</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.ClaimsTransformationProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="email" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="GetEmailFromReadOnlyEmail" />
+          </OutputClaimsTransformations>
+        </TechnicalProfile>
+
+        <TechnicalProfile Id="GetEmailAddress">
+          <DisplayName>Get Email Address</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.ClaimsTransformationProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="ReadOnlyEmail" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="GetEmailFromEmails" />
+          </OutputClaimsTransformations>
+        </TechnicalProfile>
+        <!--end of TOTP-->
+      </TechnicalProfiles>
+    </ClaimsProvider>
+
+  <ClaimsProvider>
+  <DisplayName>RestfulProvider</DisplayName>
+  <TechnicalProfiles>
+    <TechnicalProfile Id="SendOtp">
+      <DisplayName>Use SendGrid's email API to send the code the the user</DisplayName>
+      <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.RestfulProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+      <Metadata>
+        <Item Key="ServiceUrl">https://api.sendgrid.com/v3/mail/send</Item>
+        <Item Key="AuthenticationType">Bearer</Item>
+        <Item Key="SendClaimsIn">Body</Item>
+        <Item Key="ClaimUsedForRequestPayload">emailRequestBody</Item>
+      </Metadata>
+      <CryptographicKeys>
+        <Key Id="BearerAuthenticationToken" StorageReferenceId="B2C_1A_SendGridSecret" />
+      </CryptographicKeys>
+      <InputClaimsTransformations>
+        <InputClaimsTransformation ReferenceId="GenerateEmailRequestBody" />
+      </InputClaimsTransformations>
+      <InputClaims>
+        <InputClaim ClaimTypeReferenceId="emailRequestBody" />
+      </InputClaims>
+    </TechnicalProfile>
+  </TechnicalProfiles>
+</ClaimsProvider>
+    <ClaimsProvider>
+      <DisplayName>Facebook</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="Facebook-OAUTH">
+          <Metadata>
+            <Item Key="client_id">236304242281175</Item>
+            <Item Key="scope">email public_profile</Item>
+            <Item Key="ClaimsEndpoint">https://graph.facebook.com/me?fields=id,first_name,last_name,name,email</Item>
+          </Metadata>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+    <ClaimsProvider>
+      <DisplayName>Azure Active Directory Store</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="AAD-Common">
+          <DisplayName>Azure Active Directory</DisplayName>
+          <!--  Demo action required: Provide objectId and appId before using extension properties. -->
+          <Metadata>
+            <Item Key="ApplicationObjectId">842cb4ba-0128-4ac6-88ba-14c0bf7a86cb</Item>
+            <Item Key="ClientId">2e1a479d-d417-4503-a3ce-573ba099a466</Item>
+          </Metadata>
+          <!-- /Demo -->
+        </TechnicalProfile>
+
+        <!-- Demo: The following technical profile updates the authyId for a user, identified by the object identifier for the user,
+             in the Azure Active Directory identity store. An error is raised if the user does not exist. -->
+        <TechnicalProfile Id="AAD-WriteUserAppCodeByObjectId">
+          <Metadata>
+            <Item Key="Operation">Write</Item>
+            <Item Key="RaiseErrorIfClaimsPrincipalDoesNotExist">true</Item>
+          </Metadata>
+          <IncludeInSso>false</IncludeInSso>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="objectId" Required="true" />
+          </InputClaims>
+          <PersistedClaims>
+            <PersistedClaim ClaimTypeReferenceId="objectId" />
+            <PersistedClaim ClaimTypeReferenceId="extension_authyId" />
+          </PersistedClaims>
+          <IncludeTechnicalProfile ReferenceId="AAD-Common" />
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+    <ClaimsProvider>
+      <DisplayName>Azure Active Directory</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="AAD-UserWriteMFAMethod">
+          <Metadata>
+            <Item Key="Operation">Write</Item>
+            <Item Key="RaiseErrorIfClaimsPrincipalAlreadyExists">false</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="objectId" />
+          </InputClaims>
+          <PersistedClaims>
+            <!-- Required claims -->
+            <PersistedClaim ClaimTypeReferenceId="objectId" />
+            <PersistedClaim ClaimTypeReferenceId="userPrincipalName" />
+            <PersistedClaim ClaimTypeReferenceId="extension_mfaByPhoneOrEmail" />
+            <PersistedClaim ClaimTypeReferenceId="displayName" />
+          </PersistedClaims>
+          <IncludeTechnicalProfile ReferenceId="AAD-Common" />
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-AAD" />
+        </TechnicalProfile>
+        <TechnicalProfile Id="AAD-UserWritePhoneNumberUsingObjectId">
+          <Metadata>
+            <!--Insert b2c-extensions-app application ID here-->  
+            <Item Key="2e1a479d-d417-4503-a3ce-573ba099a466"></Item>
+            <!--Insert b2c-extensions-app application ObjectId here-->
+           <Item Key="842cb4ba-0128-4ac6-88ba-14c0bf7a86cb"></Item>
+          </Metadata>
+          <PersistedClaims>
+            <!--Sample: Add the MFA preferred method to the persisted claims collection -->
+            <PersistedClaim ClaimTypeReferenceId="extension_mfaByPhoneOrEmail" />
+          </PersistedClaims>
+        </TechnicalProfile>
+        <TechnicalProfile Id="AAD-UserReadUsingObjectId">
+          <OutputClaims>
+            <!-- The userPrincipalName is required for the AzureMfaProtocolProvider technical profiles-->
+            <OutputClaim ClaimTypeReferenceId="userPrincipalName" />
+            <!--Sample: Read the MFA preferred method-->
+            <OutputClaim ClaimTypeReferenceId="extension_mfaByPhoneOrEmail" />
+          </OutputClaims>
+        </TechnicalProfile>
+        <TechnicalProfile Id="AAD-UserReadUsingAlternativeSecurityId">
+          <OutputClaims>
+            <!--Sample: Read the MFA preferred method-->
+            <OutputClaim ClaimTypeReferenceId="extension_mfaByPhoneOrEmail" />
+          </OutputClaims>
+        </TechnicalProfile>
+
+        <!-- Add the following technical profile -->
+    <TechnicalProfile Id="AAD-UserReadWithObjectId">
+      <DisplayName>Azure AD User Read With ObjectId</DisplayName>
+      <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.AzureActiveDirectoryProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+      <Metadata>
+        <Item Key="ServiceUrl">https://graph.windows.net/</Item>
+        <Item Key="AuthenticationType">Bearer</Item>
+        <Item Key="SendClaimsIn">Body</Item>
+      </Metadata>
+      <InputClaims>
+        <InputClaim ClaimTypeReferenceId="objectId" PartnerClaimType="objectId" Required="true" />
+      </InputClaims>
+      <OutputClaims>
+        <!-- Add the necessary output claims -->
+      </OutputClaims>
+      <ValidationTechnicalProfiles>
+        <ValidationTechnicalProfile ReferenceId="AAD-UserReadWithObjectIdValidation" />
+      </ValidationTechnicalProfiles>
+      <UseTechnicalProfileForSessionManagement ReferenceId="SM-Noop" />
+    </TechnicalProfile>
+
+    <!-- Add the validation technical profile -->
+    <TechnicalProfile Id="AAD-UserReadWithObjectIdValidation">
+      <DisplayName>Validate Azure AD User Read With ObjectId</DisplayName>
+      <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.AzureActiveDirectoryProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+      <Metadata>
+        <Item Key="ServiceUrl">https://graph.windows.net/</Item>
+        <Item Key="AuthenticationType">Bearer</Item>
+        <Item Key="SendClaimsIn">Body</Item>
+      </Metadata>
+      <InputClaims>
+        <InputClaim ClaimTypeReferenceId="objectId" PartnerClaimType="objectId" Required="true" />
+      </InputClaims>
+      <OutputClaims>
+        <!-- Add the necessary output claims -->
+      </OutputClaims>
+    </TechnicalProfile>
+
+    </TechnicalProfiles>
+    </ClaimsProvider>
+
+    <!-- Demo: The following claims provider defines the REST providers. -->
+    <ClaimsProvider>
+      <DisplayName>REST API</DisplayName>
+      <TechnicalProfiles>
+        <!-- Demo: The following technical profile register the user in Authy service
+        We use this technical profile to register new user-->
+        <TechnicalProfile Id="AppFactor-RegisterWebHook">
+          <DisplayName>Generate TOTP Web Hook Azure Function</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.RestfulProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="ServiceUrl">https://your-rest-api.azurewebsites.net/api/identity/register</Item>
+            <Item Key="AuthenticationType">None</Item>
+            <Item Key="SendClaimsIn">Body</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="email" DefaultValue="" />
+            <InputClaim ClaimTypeReferenceId="signInName" DefaultValue="" />
+            <InputClaim ClaimTypeReferenceId="strongAuthenticationPhoneNumber" PartnerClaimType="phoneNumber" />
+          </InputClaims>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="extension_authyId" PartnerClaimType="authyId" />
+          </OutputClaims>
+        </TechnicalProfile>
+
+        <!-- Demo: The following technical profile wait for Authy app approvale (timeout is set to 30 seconds).
+        We call this technical profile during registration process and sign-in process-->
+        <TechnicalProfile Id="AppFactor-WaitForAuthyApprovalWebHook">
+          <DisplayName>Verify TOTP Web Hook Azure Function</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.RestfulProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="ServiceUrl">https://your-rest-api.azurewebsites.net/api/identity/WaitForAuthyApproval</Item>
+            <Item Key="AuthenticationType">None</Item>
+            <Item Key="SendClaimsIn">Body</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="extension_authyId" PartnerClaimType="authyId" />
+            <InputClaim ClaimTypeReferenceId="email" DefaultValue="" />
+            <InputClaim ClaimTypeReferenceId="signInName" DefaultValue="" />
+          </InputClaims>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+
+    <ClaimsProvider>
+      <DisplayName>OAuth2 Error TPs</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="Return-MFA-Method-Incorrect-Error">
+          <DisplayName>Return OAuth2 error</DisplayName>
+          <Protocol Name="None" />
+          <OutputTokenFormat>OAuth2Error</OutputTokenFormat>
+          <CryptographicKeys>
+            <Key Id="issuer_secret" StorageReferenceId="B2C_1A_TokenSigningKeyContainer" />
+          </CryptographicKeys>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="errorCode" />
+            <InputClaim ClaimTypeReferenceId="errorMessage" />
+          </InputClaims>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+    
+    <ClaimsProvider>
+      <DisplayName>Local Account SignIn</DisplayName>
+      <TechnicalProfiles>
+         <TechnicalProfile Id="login-NonInteractive">
+          <Metadata>
+            <Item Key="client_id">c0b1c6cb-29f5-4b50-8b59-f807d70fa135</Item>
+            <Item Key="IdTokenAudience">614c89c1-0160-457d-b612-9da78c7c0c4c</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="client_id" DefaultValue="c0b1c6cb-29f5-4b50-8b59-f807d70fa135" />
+            <InputClaim ClaimTypeReferenceId="resource_id" PartnerClaimType="resource" DefaultValue="614c89c1-0160-457d-b612-9da78c7c0c4c" />
+          </InputClaims>
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+
+    <ClaimsProvider>
+      <DisplayName>Local Account</DisplayName>
+      <TechnicalProfiles>
+        <!-- Set the isForgotPassword to true-->
+        <TechnicalProfile Id="ForgotPassword">
+          <DisplayName>Forgot your password?</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.ClaimsTransformationProtocolProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="isForgotPassword" DefaultValue="true" AlwaysUseDefaultValue="true" />
+          </OutputClaims>
+        </TechnicalProfile>
+
+        <!-- Update the sign-up or sign-in page with forgot password link target ClaimsExchange -->
+        <TechnicalProfile Id="SelfAsserted-LocalAccountSignin-Email">
+          <Metadata>
+            <Item Key="setting.forgotPasswordLinkOverride">ForgotPasswordExchange</Item>
+          </Metadata>
+          <OutputClaims>
+            <!-- The userPrincipalName is required for the AzureMfaProtocolProvider technical profiles-->
+            <OutputClaim ClaimTypeReferenceId="userPrincipalName" />
+          </OutputClaims>
+          <OutputClaimsTransformations>
+            <OutputClaimsTransformation ReferenceId="CopySignInNameToReadOnly" />
+          </OutputClaimsTransformations>
+        </TechnicalProfile>
+
+        <!-- Adding the required session manager -->
+        <TechnicalProfile Id="LocalAccountWritePasswordUsingObjectId">
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-AAD" />
+        </TechnicalProfile>
+
+      <TechnicalProfile Id="LocalAccountSignUpWithLogonEmail">
+        <InputClaimsTransformations>
+          <InputClaimsTransformation ReferenceId="GetLocalizedStringsForEmail" />
+        </InputClaimsTransformations>
+        <DisplayClaims>
+          <DisplayClaim DisplayControlReferenceId="emailVerificationControl" />
+          <DisplayClaim ClaimTypeReferenceId="displayName" Required="true" />
+          <DisplayClaim ClaimTypeReferenceId="givenName" Required="true" />
+          <DisplayClaim ClaimTypeReferenceId="surName" Required="true" />
+          <DisplayClaim ClaimTypeReferenceId="newPassword" Required="true" />
+          <DisplayClaim ClaimTypeReferenceId="reenterPassword" Required="true" />
+        </DisplayClaims>
+        <OutputClaims>
+          <!-- The userPrincipalName is required for the AzureMfaProtocolProvider technical profiles-->
+          <OutputClaim ClaimTypeReferenceId="userPrincipalName" />
+        </OutputClaims>
+        <OutputClaimsTransformations>
+          <OutputClaimsTransformation ReferenceId="CopyEmailToReadOnly" />
+        </OutputClaimsTransformations>
+      </TechnicalProfile>
+      <TechnicalProfile Id="LocalAccountDiscoveryUsingEmailAddress">
+        <InputClaimsTransformations>
+            <InputClaimsTransformation ReferenceId="GetLocalizedStringsForEmail" />
+        </InputClaimsTransformations>
+          <DisplayClaims>
+            <DisplayClaim DisplayControlReferenceId="emailVerificationControl" />
+          </DisplayClaims>
+      </TechnicalProfile>
+    </TechnicalProfiles>
+  </ClaimsProvider>
+  <ClaimsProvider>
+      <DisplayName>Self Asserted</DisplayName>
+      <TechnicalProfiles>
+        <TechnicalProfile Id="SelfAsserted-Select-MFA-Method">
+          <DisplayName>Allow user to choose their MFA Method</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="ContentDefinitionReferenceId">api.selfasserted</Item>
+          </Metadata>
+          <InputClaimsTransformations>
+            <InputClaimsTransformation ReferenceId="generateErrorCode" />
+            <InputClaimsTransformation ReferenceId="generateErrorMessage" />
+          </InputClaimsTransformations>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="extension_mfaByPhoneOrEmail" Required="true" />
+          </OutputClaims>
+        </TechnicalProfile>
+
+        <TechnicalProfile Id="SelfAsserted-MFA-MethodSelection">
+      <DisplayName>Self Asserted MFA Method Selection</DisplayName>
+      <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+      <Metadata>
+        <Item Key="ContentDefinitionReferenceId">api.selfasserted</Item>
+      </Metadata>
+      <InputClaimsTransformations>
+        <InputClaimsTransformation ReferenceId="generateErrorCode" />
+        <InputClaimsTransformation ReferenceId="generateErrorMessage" />
+      </InputClaimsTransformations>
+      <InputClaims>
+        <InputClaim ClaimTypeReferenceId="email" />
+        <InputClaim ClaimTypeReferenceId="extension_mfaByPhoneOrEmail" />
+      </InputClaims>
+      <OutputClaims>
+        <OutputClaim ClaimTypeReferenceId="extension_mfaByPhoneOrEmail" Required="true" />
+      </OutputClaims>
+    </TechnicalProfile>
+
+    <TechnicalProfile Id="SelfAsserted-SkipMFASetup">
+          <DisplayName>Self Asserted Skip MFA Setup</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="ContentDefinitionReferenceId">api.selfasserted</Item>
+          </Metadata>
+          <InputClaimsTransformations>
+            <InputClaimsTransformation ReferenceId="generateErrorCode" />
+            <InputClaimsTransformation ReferenceId="generateErrorMessage" />
+          </InputClaimsTransformations>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="email" />
+            <InputClaim ClaimTypeReferenceId="extension_mfaByPhoneOrEmail" />
+          </InputClaims>
+          <OutputClaims>
+            <OutputClaim ClaimTypeReferenceId="extension_mfaByPhoneOrEmail" Required="true" />
+          </OutputClaims>
+        </TechnicalProfile>
+
+        <TechnicalProfile Id="EmailVerifyOnSignIn">
+          <DisplayName>EmailVerifyOnSignIn</DisplayName>
+          <Protocol Name="Proprietary" Handler="Web.TPEngine.Providers.SelfAssertedAttributeProvider, Web.TPEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+          <Metadata>
+            <Item Key="ContentDefinitionReferenceId">api.selfasserted</Item>
+          </Metadata>
+          <InputClaims>
+            <InputClaim ClaimTypeReferenceId="readOnlyEmail" />
+          </InputClaims>
+          <OutputClaims>
+            <!-- Required claims -->
+            <OutputClaim ClaimTypeReferenceId="isActiveMFASession" DefaultValue="true" />
+            <OutputClaim ClaimTypeReferenceId="readOnlyEmail" PartnerClaimType="Verified.Email" />
+          </OutputClaims>
+          <ValidationTechnicalProfiles>
+            <ValidationTechnicalProfile ReferenceId="AAD-UserWriteMFAMethod"></ValidationTechnicalProfile>
+          </ValidationTechnicalProfiles>
+          <UseTechnicalProfileForSessionManagement ReferenceId="SM-MFA" />
+        </TechnicalProfile>
+      </TechnicalProfiles>
+    </ClaimsProvider>
+</ClaimsProviders>
+  <UserJourneys>
+    <UserJourney Id="SignUpOrSignIn-Custom" DefaultCpimIssuerTechnicalProfileReferenceId="JwtIssuer">
+      <OrchestrationSteps>
+
+        <OrchestrationStep Order="1" Type="CombinedSignInAndSignUp" ContentDefinitionReferenceId="api.signuporsignin">
+          <ClaimsProviderSelections>
+            <ClaimsProviderSelection TargetClaimsExchangeId="FacebookExchange" />
+            <ClaimsProviderSelection ValidationClaimsExchangeId="LocalAccountSigninEmailExchange" />
+            <ClaimsProviderSelection TargetClaimsExchangeId="ForgotPasswordExchange" />
+          </ClaimsProviderSelections>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="LocalAccountSigninEmailExchange" TechnicalProfileReferenceId="SelfAsserted-LocalAccountSignin-Email" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- Step 2: Check if user selected a social provider or proceed with sign-up or password reset -->
+    <OrchestrationStep Order="2" Type="ClaimsExchange">
+      <Preconditions>
+        <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+          <Value>objectId</Value>
+          <Action>SkipThisOrchestrationStep</Action>
+        </Precondition>
+      </Preconditions>
+      <ClaimsExchanges>
+        <ClaimsExchange Id="FacebookExchange" TechnicalProfileReferenceId="Facebook-OAUTH" />
+        <ClaimsExchange Id="SignUpWithLogonEmailExchange" TechnicalProfileReferenceId="LocalAccountSignUpWithLogonEmail" />
+        <ClaimsExchange Id="ForgotPasswordExchange" TechnicalProfileReferenceId="ForgotPassword" />
+      </ClaimsExchanges>
+    </OrchestrationStep>
+
+        <!-- Step 3: Invoke password reset sub-journey if requested -->
+    <OrchestrationStep Order="3" Type="InvokeSubJourney">
+      <Preconditions>
+        <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+          <Value>isForgotPassword</Value>
+          <Action>SkipThisOrchestrationStep</Action>
+        </Precondition>
+      </Preconditions>
+      <JourneyList>
+        <Candidate SubJourneyReferenceId="PasswordReset" />
+      </JourneyList>
+    </OrchestrationStep>
+
+    <!-- Step 4: Prompt user to select preferred MFA method -->
+    <OrchestrationStep Order="4" Type="ClaimsExchange">
+      <Preconditions>
+        <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+          <Value>extension_mfaByPhoneOrEmail</Value>
+          <Action>SkipThisOrchestrationStep</Action>
+        </Precondition>
+      </Preconditions>
+      <ClaimsExchanges>
+        <ClaimsExchange Id="SelfAsserted-Select-MFA-Method" TechnicalProfileReferenceId="SelfAsserted-Select-MFA-Method" />
+      </ClaimsExchanges>
+    </OrchestrationStep>
+<OrchestrationStep Order="6" Type="ClaimsProviderSelection" ContentDefinitionReferenceId="api.localaccountsignup">
+  <Preconditions>
+    <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+      <Value>extension_mfaEnabled</Value>
+      <Value>true</Value>
+      <Action>SkipThisOrchestrationStep</Action>
+    </Precondition>
+  </Preconditions>
+  <ClaimsProviderSelections>
+    <ClaimsProviderSelection TargetClaimsExchangeId="MFA-PhoneFactor" />
+    <ClaimsProviderSelection TargetClaimsExchangeId="MFA-App" />
+    <ClaimsProviderSelection TargetClaimsExchangeId="MFA-Email" />
+  </ClaimsProviderSelections>
+</OrchestrationStep>
+<!-- Step 5: Throw error if control was bypassed or proceed with selected MFA method -->
+    <OrchestrationStep Order="5" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="Return-MFA-Method-Incorrect-Error">
+      <Preconditions>
+        <!-- Skip step if MFA method is phone -->
+        <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+          <Value>extension_mfaByPhoneOrEmail</Value>
+          <Value>phone</Value>
+          <Action>SkipThisOrchestrationStep</Action>
+        </Precondition>
+        <!-- Skip step if MFA method is app -->
+        <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+          <Value>extension_mfaByPhoneOrEmail</Value>
+          <Value>app</Value>
+          <Action>SkipThisOrchestrationStep</Action>
+        </Precondition>
+        <!-- Skip step if MFA method is email -->
+        <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+          <Value>extension_mfaByPhoneOrEmail</Value>
+          <Value>email</Value>
+          <Action>SkipThisOrchestrationStep</Action>
+        </Precondition>
+      </Preconditions>
+    </OrchestrationStep>
+     <!-- Step 7: Claims provider selection -->
+
+ 
+<!-- Step 6: Verify and save MFA app -->
+<OrchestrationStep Order="7" Type="ClaimsExchange">
+  <!-- Skip this orchestration step if the user has chosen not to enable MFA -->
+  <Preconditions>
+    <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
+      <Value>extension_mfaEnabled</Value>
+      <Value>true</Value>
+      <Action>SkipThisOrchestrationStep</Action>
+    </Precondition>
+  </Preconditions>
+  <ClaimsExchanges>
+    <!-- Based on the selected MFA method, initiate the appropriate MFA flow -->
+    <ClaimsExchange Id="MFA-PhoneFactor" TechnicalProfileReferenceId="PhoneFactor-InputOrVerify" />
+    <ClaimsExchange Id="MFA-App" TechnicalProfileReferenceId="appInputOrVerify" />
+    <ClaimsExchange Id="MFA-Email" TechnicalProfileReferenceId="Email-InputOrVerify" />
+  </ClaimsExchanges>
+</OrchestrationStep>
+
+    <!-- Step 8: Proceed with sign-up without MFA -->
+<OrchestrationStep Order="8" Type="ClaimsExchange">
+  <Preconditions>
+    <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
+      <Value>extension_mfaByPhoneOrEmail</Value>
+      <Value>none</Value>
+      <Action>SkipThisOrchestrationStep</Action>
+    </Precondition>
+  </Preconditions>
+  <ClaimsExchanges>
+    <ClaimsExchange Id="SignUpWithLogonEmailExchange-1" TechnicalProfileReferenceId="LocalAccountSignUpWithLogonEmail" />
+  </ClaimsExchanges>
+</OrchestrationStep>
+
+    <!-- Step 9: Check MFA status -->
+<OrchestrationStep Order="9" Type="ClaimsExchange">
+  <Preconditions>
+    <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+      <Value>isActiveMFASession</Value>
+      <Action>SkipThisOrchestrationStep</Action>
+    </Precondition>
+  </Preconditions>
+  <ClaimsExchanges>
+    <ClaimsExchange Id="GetMFAStatus" TechnicalProfileReferenceId="AAD-UserReadWithObjectId" />
+  </ClaimsExchanges>
+</OrchestrationStep>
+
+       <!-- Step 10: Check if user already has MFA configured -->
+<OrchestrationStep Order="10" Type="ClaimsExchange">
+  <Preconditions>
+    <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+      <Value>extension_mfaEnabled</Value>
+      <Value>true</Value>
+      <Action>SkipThisOrchestrationStep</Action>
+    </Precondition>
+  </Preconditions>
+  <!-- If user does not have MFA configured, display the MFA method selection page -->
+  <ClaimsExchanges>
+    <ClaimsExchange Id="MFA-MethodSelection2" TechnicalProfileReferenceId="SelfAsserted-MFA-MethodSelection" />
+  </ClaimsExchanges>
+</OrchestrationStep>
+
+       <!-- Skip MFA setup if user does not want MFA -->
+<OrchestrationStep Order="11" Type="ClaimsExchange">
+  <Preconditions>
+    <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
+      <Value>extension_mfaEnabled</Value>
+      <Value>false</Value>
+      <Action>SkipThisOrchestrationStep</Action>
+    </Precondition>
+  </Preconditions>
+  <ClaimsExchanges>
+    <ClaimsExchange Id="SkipMFASetup" TechnicalProfileReferenceId="SelfAsserted-SkipMFASetup" />
+  </ClaimsExchanges>
+</OrchestrationStep>
+
+        <!-- For social IDP authentication, attempt to find the user account in the directory. -->
+        <!-- <OrchestrationStep Order="6" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+              <Value>authenticationSource</Value>
+              <Value>localAccountAuthentication</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AADUserReadUsingAlternativeSecurityId" TechnicalProfileReferenceId="AAD-UserReadUsingAlternativeSecurityId-NoError" />
+          </ClaimsExchanges>
+        </OrchestrationStep> -->
+
+        <!-- Show self-asserted page only if the directory does not have the user account already (i.e. we do not have an objectId). 
+          This can only happen when authentication happened using a social IDP. If local account was created or authentication done
+          using ESTS in step 2, then an user account must exist in the directory by this time. -->
+        <!-- <OrchestrationStep Order="7" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>objectId</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SelfAsserted-Social" TechnicalProfileReferenceId="SelfAsserted-Social" />
+          </ClaimsExchanges>
+        </OrchestrationStep> -->
+
+        <!-- Call the TOTP enrollment subjourney if user selects app or email MFA -->
+<OrchestrationStep Order="12" Type="InvokeSubJourney">
+  <Preconditions>
+    <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+      <Value>extension_mfaByPhoneOrEmail</Value>
+      <Value>app</Value>
+      <Action>SkipThisOrchestrationStep</Action>
+    </Precondition>
+    <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+      <Value>extension_mfaByPhoneOrEmail</Value>
+      <Value>email</Value>
+      <Action>SkipThisOrchestrationStep</Action>
+    </Precondition>
+  </Preconditions>
+  <JourneyList>
+    <Candidate SubJourneyReferenceId="TotpFactor-Input" />
+  </JourneyList>
+</OrchestrationStep>
+        <!-- The previous step (SelfAsserted-Social) could have been skipped if there were no attributes to collect 
+             from the user. So, in that case, create the user in the directory if one does not already exist 
+             (verified using objectId which would be set from the last step if account was created in the directory. -->
+        <!-- <OrchestrationStep Order="9" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>objectId</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AADUserWrite" TechnicalProfileReferenceId="AAD-UserWriteUsingAlternativeSecurityId" />
+          </ClaimsExchanges>
+        </OrchestrationStep> -->
+
+      <OrchestrationStep Order="13" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
+    </OrchestrationSteps>
+  </UserJourney>
+  <UserJourney Id="ProfileEditWithAuthApp">
+      <OrchestrationSteps>
+
+        <OrchestrationStep Order="1" Type="ClaimsProviderSelection" ContentDefinitionReferenceId="api.idpselections">
+          <ClaimsProviderSelections>
+            <ClaimsProviderSelection TargetClaimsExchangeId="FacebookExchange" />
+            <ClaimsProviderSelection TargetClaimsExchangeId="LocalAccountSigninEmailExchange" />
+          </ClaimsProviderSelections>
+        </OrchestrationStep>
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="FacebookExchange" TechnicalProfileReferenceId="Facebook-OAUTH" />
+            <ClaimsExchange Id="LocalAccountSigninEmailExchange" TechnicalProfileReferenceId="SelfAsserted-LocalAccountSignin-Email" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+              <Value>authenticationSource</Value>
+              <Value>localAccountAuthentication</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AADUserRead" TechnicalProfileReferenceId="AAD-UserReadUsingAlternativeSecurityId" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="4" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+              <Value>authenticationSource</Value>
+              <Value>socialIdpAuthentication</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AADUserReadWithObjectId" TechnicalProfileReferenceId="AAD-UserReadUsingObjectId" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <OrchestrationStep Order="5" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="B2CUserProfileUpdateExchange" TechnicalProfileReferenceId="SelfAsserted-ProfileUpdate" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="6" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
+
+      </OrchestrationSteps>
+      <ClientDefinition ReferenceId="DefaultWeb" />
+    </UserJourney>
+  <UserJourney Id="ProfileEdit">
+    <OrchestrationSteps>
+      <OrchestrationStep Order="2" Type="ClaimsExchange">
+        <ClaimsExchanges>
+          <ClaimsExchange Id="PhoneFactor" TechnicalProfileReferenceId="PhoneFactor-InputOrVerify"/>
+        </ClaimsExchanges>
+      </OrchestrationStep>
+    </OrchestrationSteps>
+    <ClientDefinition ReferenceId="DefaultWeb"/>
+  </UserJourney>
+
+ <UserJourney Id="PasswordReset">
+  <OrchestrationSteps>
+    <OrchestrationStep Order="1" Type="ClaimsProviderSelection">
+      <Preconditions>
+        <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+          <Value>authenticationSource</Value>
+          <Value>localAccountAuthentication</Value>
+          <Action>SkipThisOrchestrationStep</Action>
+        </Precondition>
+      </Preconditions>
+      <ClaimsProviderSelections>
+        <ClaimsProviderSelection TargetClaimsExchangeId="ForgotPasswordExchange" />
+      </ClaimsProviderSelections>
+    </OrchestrationStep>
+    <OrchestrationStep Order="2" Type="ClaimsExchange">
+      <Preconditions>
+        <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
+          <Value>authenticationSource</Value>
+          <Value>localAccountAuthentication</Value>
+          <Action>SkipThisOrchestrationStep</Action>
+        </Precondition>
+      </Preconditions>
+      <ClaimsExchanges>
+        <ClaimsExchange Id="ForgotPasswordExchange" TechnicalProfileReferenceId="ForgotPassword" />
+      </ClaimsExchanges>
+    </OrchestrationStep>
+
+    <!-- Call the TOTP enrollment ub journey. If user already enrolled the sub journey will not ask the user to enroll -->
+    <OrchestrationStep Order="3" Type="InvokeSubJourney">
+      <JourneyList>
+        <Candidate SubJourneyReferenceId="TotpFactor-Input" />
+      </JourneyList>
+    </OrchestrationStep>
+
+    <!-- Call the TOTP validation sub journey-->
+    <OrchestrationStep Order="4" Type="InvokeSubJourney">
+      <JourneyList>
+        <Candidate SubJourneyReferenceId="TotpFactor-Verify" />
+      </JourneyList>
+    </OrchestrationStep>
+    <OrchestrationStep Order="5" Type="ClaimsExchange">
+      <ClaimsExchanges>
+        <ClaimsExchange Id="PhoneFactor-Verify" TechnicalProfileReferenceId="PhoneFactor-InputOrVerify" />
+      </ClaimsExchanges>
+    </OrchestrationStep>
+
+    <OrchestrationStep Order="6" Type="ClaimsExchange">
+      <ClaimsExchanges>
+        <ClaimsExchange Id="PasswordResetUsingEmailAddressExchange" TechnicalProfileReferenceId="LocalAccountDiscoveryUsingEmailAddress" />
+      </ClaimsExchanges>
+    </OrchestrationStep>
+
+    <OrchestrationStep Order="7" Type="ClaimsExchange">
+      <ClaimsExchanges>
+        <ClaimsExchange Id="NewCredentials" TechnicalProfileReferenceId="LocalAccountWritePasswordUsingObjectId" />
+      </ClaimsExchanges>
+    </OrchestrationStep>
+
+    <OrchestrationStep Order="8" Type="SendClaims" CpimIssuerTechnicalProfileReferenceId="JwtIssuer" />
+  </OrchestrationSteps>
+  <ClientDefinition ReferenceId="DefaultWeb" />
+</UserJourney>
+</UserJourneys>
+
+<SubJourneys>
+    <SubJourney Id="PasswordReset" Type="Call">
+      <OrchestrationSteps>
+        <!-- Validate user's email address. Run this step only when user resets the password-->
+        <OrchestrationStep Order="1" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="PasswordResetUsingEmailAddressExchange" TechnicalProfileReferenceId="LocalAccountDiscoveryUsingEmailAddress" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- Collect and persist a new password. Run this step only when user resets the password-->
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <ClaimsExchanges>
+            <ClaimsExchange Id="NewCredentials" TechnicalProfileReferenceId="LocalAccountWritePasswordUsingObjectId" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+      </OrchestrationSteps>
+    </SubJourney>
+
+    <!--TOTP subjourneys-->
+    <!-- Set the required claims numberOfAvailableDevices and totpIdentifier-->
+    <SubJourney Id="SetTotpInitialValue" Type="Call">
+      <OrchestrationSteps>
+
+        <!-- If number of available device claim not exists, set the value to 0-->
+        <OrchestrationStep Order="1" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>numberOfAvailableDevices</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SetTotpDefaultValue" TechnicalProfileReferenceId="SetTotpDefaultValue" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- The following orchestration steps try to get the user identifier for different 
+             type of authentication, such as local and social account.-->
+        
+             <!-- Try to get the identifier from UserId-->
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>totpIdentifier</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>UserId</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SetTotpIdentifierAsUserId" TechnicalProfileReferenceId="CreateTotpIdentifier-UserId" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- Get the identifier from email-->
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>totpIdentifier</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>email</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SetTotpIdentifierAsEmail" TechnicalProfileReferenceId="CreateTotpIdentifier-Email" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- Get the identifier from the user's emails -->
+        <OrchestrationStep Order="4" Type="InvokeSubJourney">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>totpIdentifier</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>emails</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <JourneyList>
+            <Candidate SubJourneyReferenceId="ExtractEmailFromEmailsForTotpIdentifier" />
+          </JourneyList>
+        </OrchestrationStep>
+        
+        <!-- Get the identifier from local account sign-in name-->
+        <OrchestrationStep Order="5" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="true">
+              <Value>totpIdentifier</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>signInName</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SetTotpIdentifierAsSignInName" TechnicalProfileReferenceId="CreateTotpIdentifier-SignInName" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+      </OrchestrationSteps>
+    </SubJourney>
+
+    <!-- Get the identifier from the user's emails -->
+    <SubJourney Id="ExtractEmailFromEmailsForTotpIdentifier" Type="Call">
+      <OrchestrationSteps>
+        <OrchestrationStep Order="1" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>emails</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="GetEmailAddress" TechnicalProfileReferenceId="GetEmailAddress" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>ReadOnlyEmail</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="GetEmailFromReadOnlyEmail" TechnicalProfileReferenceId="GetEmailFromReadOnlyEmail" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>email</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SetTotpIdentifierAsEmail" TechnicalProfileReferenceId="CreateTotpIdentifier-Email" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+        <OrchestrationStep Order="4" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimsExist" ExecuteActionsIf="false">
+              <Value>signInName</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="SetTotpIdentifierAsSignInName" TechnicalProfileReferenceId="CreateTotpIdentifier-SignInName" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+      </OrchestrationSteps>
+    </SubJourney>
+
+    <!-- TOTP verification sub journey-->
+    <SubJourney Id="TotpFactor-Verify" Type="Call">
+      <OrchestrationSteps>
+        
+        <!-- Set the required claims numberOfAvailableDevices and totpIdentifier-->
+        <OrchestrationStep Order="1" Type="InvokeSubJourney">
+          <JourneyList>
+            <Candidate SubJourneyReferenceId="SetTotpInitialValue" />
+          </JourneyList>
+        </OrchestrationStep>
+
+        <!-- If current user is not a new one (this is a sign-in flow, and not sign-up), 
+             check the number of available devices. -->
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+              <Value>newUser</Value>
+              <Value>True</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="CheckAvailableDevices" TechnicalProfileReferenceId="AzureMfa-GetAvailableDevices" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- If the number of available devices isn't zero (user has enrolled before), 
+             render the TOTP verification page -->
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+              <Value>numberOfAvailableDevices</Value>
+              <Value>0</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AuthenticatorForSignIn" TechnicalProfileReferenceId="OTPVerification" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+      </OrchestrationSteps>
+    </SubJourney>
+
+    <!-- TOTP enrollment sub journey-->
+    <SubJourney Id="TotpFactor-Input" Type="Call">
+      <OrchestrationSteps>
+
+        <!-- Set the required claims numberOfAvailableDevices and totpIdentifier-->
+        <OrchestrationStep Order="1" Type="InvokeSubJourney">
+          <JourneyList>
+            <Candidate SubJourneyReferenceId="SetTotpInitialValue" />
+          </JourneyList>
+        </OrchestrationStep>
+
+        <!-- If current user is not a new one (this is a sign-in flow, and not sign-up), 
+             check the number of available devices. -->
+        <OrchestrationStep Order="2" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="true">
+              <Value>newUser</Value>
+              <Value>True</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="CheckAvailableDevices" TechnicalProfileReferenceId="AzureMfa-GetAvailableDevices" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- If the number of available devices is zero (user hasn't enrolled before), 
+            render the TOTP enrollment page to scan the QR code that starts the enrollment process -->
+        <OrchestrationStep Order="3" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
+              <Value>numberOfAvailableDevices</Value>
+              <Value>0</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AuthenticatorForSignUp" TechnicalProfileReferenceId="EnableOTPAuthentication" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+
+        <!-- If the number of available devices is zero (user hasn't enrolled before), 
+             render the TOTP verification page.  -->
+        <OrchestrationStep Order="4" Type="ClaimsExchange">
+          <Preconditions>
+            <Precondition Type="ClaimEquals" ExecuteActionsIf="false">
+              <Value>numberOfAvailableDevices</Value>
+              <Value>0</Value>
+              <Action>SkipThisOrchestrationStep</Action>
+            </Precondition>
+          </Preconditions>
+          <ClaimsExchanges>
+            <ClaimsExchange Id="AuthenticatorForSignIn" TechnicalProfileReferenceId="OTPVerification" />
+          </ClaimsExchanges>
+        </OrchestrationStep>
+      </OrchestrationSteps>
+    </SubJourney>
+
+  </SubJourneys>
+</TrustFrameworkPolicy>
