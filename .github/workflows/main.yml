@@ -13,7 +13,7 @@ jobs:
     - name: 'Upload TrustFrameworkBase Policy'
       uses:  azure-ad-b2c/deploy-trustframework-policy@v5
       with:
-        folder: "./src/custom-policies"
+        folder: "./Policies"
         files: "TrustFrameworkBase.xml,TrustFrameworkExtensions.xml,SignUpOrSignin.xml"
         tenant: ${{ env.tenant }}
         clientId: ${{ env.clientId }}
