@@ -12,7 +12,12 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-
+      
+    - name: Set up Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
     - name: Deploy Policies to Azure B2C
       uses: azure-ad-b2c/deploy-trustframework-policy@v5
       with:
@@ -25,4 +30,14 @@ jobs:
         tenant: ${{ secrets.B2C_TENANT_NAME }}
         clientId: ${{ secrets.AZURE_CLIENT_ID }}
         clientSecret: ${{ secrets.CLIENTSECRET }}
+
+    - name: Deploy Policies
+      run: |
+        # Pobierz nazwę pliku polityki z repozytorium
+        POLICY_NAME=$(ls path/to/your/policies | grep .xml)
+        # Usuń rozszerzenie .xml
+        POLICY_NAME=${POLICY_NAME%.xml}
+        az b2c policy list --tenant-id ${{ secrets.AZURE_TENANT_ID }} --query [].name -o tsv | xargs -I {} az b2c policy delete --tenant-id ${{ secrets.AZURE_TENANT_ID }} --name {}
+        az b2c policy upload --name $POLICY_NAME --tenant-id ${{ secrets.AZURE_TENANT_ID }} --policy-file ./src/custom-policies/$POLICY_NAME.xml
+
       
