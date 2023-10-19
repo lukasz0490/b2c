@@ -18,7 +18,7 @@ jobs:
       with:
         folder: ./src
         files: '*_TEST.xml'
-        tenant: ${{ secrets.B2C_TENANT }}
+        tenant: ${{ secrets.B2C_TENANT_NAME }}
         clientId: ${{ secrets.AZURE_CLIENT_ID }}
-        clientSecret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        clientSecret: ${{ secrets.CLIENTSECRET }}
         renumberSteps: true
