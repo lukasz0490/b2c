@@ -13,10 +13,18 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
       
+    - name: Install Azure CLI
+      run: |
+        choco install azure-cli
+    
+    - name: Debug Azure CLI Version
+      run: |
+        az --version
+    
     - name: Set up Azure CLI
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.CLIENTSECRET }}
+      run: |
+        az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.CLIENTSECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+        az account show
         
     - name: Deploy Policies to Azure B2C
       uses: azure-ad-b2c/deploy-trustframework-policy@v5
