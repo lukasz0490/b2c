@@ -28,11 +28,10 @@ jobs:
 
     - name: Deploy Policies
       run: |
-        # Pobierz nazwę pliku polityki z repozytorium
-        POLICY_NAME=$(ls ./src/custom-policies | grep .xml)
-        # Usuń rozszerzenie .xml
-        POLICY_NAME=${POLICY_NAME%.xml}
-        az b2c policy list --tenant-id ${{ secrets.AZURE_TENANT_ID }} --query [].name -o tsv | xargs -I {} az b2c policy delete --tenant-id ${{ secrets.AZURE_TENANT_ID }} --name {}
-        az b2c policy upload --name $POLICY_NAME --tenant-id ${{ secrets.AZURE_TENANT_ID }} --policy-file ./src/custom-policies/$POLICY_NAME.xml
+        $PolicyName = Get-ChildItem -Path ./src/custom-policies -Filter *.xml | Select-Object -First 1 -ExpandProperty Name
+        $PolicyName = $PolicyName -replace '\.xml$'
+        az b2c policy list --tenant-id ${{ secrets.AZURE_TENANT_ID }} --query [].name -o tsv | ForEach-Object { az b2c policy delete --tenant-id ${{ secrets.AZURE_TENANT_ID }} --name $_ }
+        az b2c policy upload --name $PolicyName --tenant-id ${{ secrets.AZURE_TENANT_ID }} --policy-file ./src/custom-policies/$PolicyName.xml
+
 
       
