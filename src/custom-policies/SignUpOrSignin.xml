@@ -17,6 +17,7 @@
   </BasePolicy>
   <BuildingBlocks>
     <ClaimsSchema>
+      #TEST
       <ClaimType Id="errorCode">
         <DisplayName>errorCode</DisplayName>
         <DataType>string</DataType>
