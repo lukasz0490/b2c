@@ -12,10 +12,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-      
-    - name: Install Azure CLI
-      run: |
-        choco install azure-cli
     
     - name: Debug Azure CLI Version
       run: |
