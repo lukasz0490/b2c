@@ -16,7 +16,7 @@ jobs:
     - name: Set up Azure CLI
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        creds: ${{ secrets.CLIENTSECRET }}
         
     - name: Deploy Policies to Azure B2C
       uses: azure-ad-b2c/deploy-trustframework-policy@v5
