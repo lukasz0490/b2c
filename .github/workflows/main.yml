@@ -1,8 +1,8 @@
 on: push
 
 env:
-  clientId: 71488c5e-7222-4d81-995b-4775857c3eed
-  tenant: Volturi.onmicrosoft.com
+  clientId: ${{ secrets.AZURE_CLIENT_ID }}
+  tenant: ${{ secrets.AZURE_TENANT_ID }} 
 
 jobs:
   build-and-deploy:
@@ -20,3 +20,32 @@ jobs:
         clientId: ${{ env.clientId }}
         clientSecret: ${{ secrets.clientSecret }}
         renumberSteps: false
+
+    - name: 'Az CLI login' 
+      uses: azure/login@v1 
+      with: 
+        client-id: ${{ secrets.AZURE_CLIENT_ID }} 
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }} 
+        allow-no-subscriptions: true 
+        enable-AzPSSession: true
+
+    - name: Replace placeholder values 
+      run: | 
+        sed -i 's|${B2C_TENANT_NAME}|${{ secrets.B2C_TENANT_NAME }}|g' ./policies/TrustFrameworkBase.xml 
+        sed -i 's|${B2C_TENANT_NAME}|${{ secrets.B2C_TENANT_NAME }}|g' ./policies/TrustFrameworkLocalization.xml 
+        sed -i 's|${B2C_TENANT_NAME}|${{ secrets.B2C_TENANT_NAME }}|g; s|${B2C_PROXY_IEF_APPID}|${{ secrets.B2C_PROXY_IEF_APPID }}|g; s|${B2C_IEF_APPID}|${{ secrets.B2C_IEF_APPID }}|g' ./policies/TrustFrameworkExtensions.xml 
+        sed -i 's|${B2C_TENANT_NAME}|${{ secrets.B2C_TENANT_NAME }}|g' ./policies/SignUpOrSignin.xml
+        
+    - name: 'Upload Custom Policies' 
+      uses: azure/powershell@v1 
+      with: 
+        inlineScript: | 
+          $token = Get-AzAccessToken -ResourceUrl "https://graph.microsoft.com/" 
+          Install-Module -Name Microsoft.Graph.Identity.SignIns 
+          Select-MgProfile -Name "beta" 
+          Connect-MgGraph -AccessToken $token.Token 
+          Set-MgTrustFrameworkPolicyContent -TrustFrameworkPolicyId "B2C_1A_TrustFrameworkBase_GitHub" -InFile "./policies/TrustFrameworkBase.xml" 
+          Set-MgTrustFrameworkPolicyContent -TrustFrameworkPolicyId "B2C_1A_TrustFrameworkLocalization_GitHub" -InFile "./policies/TrustFrameworkLocalization.xml" 
+          Set-MgTrustFrameworkPolicyContent -TrustFrameworkPolicyId "B2C_1A_TrustFrameworkExtensions_GitHub" -InFile "./policies/TrustFrameworkExtensions.xml" 
+          Set-MgTrustFrameworkPolicyContent -TrustFrameworkPolicyId "B2C_1A_Signup_Signin_GitHub" -InFile "./policies/SignUpOrSignin.xml" 
+          azPSVersion: "latest"
