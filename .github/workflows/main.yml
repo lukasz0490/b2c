@@ -26,12 +26,6 @@ jobs:
         clientId: ${{ secrets.AZURE_CLIENT_ID }}
         clientSecret: ${{ secrets.CLIENTSECRET }}
 
-    - name: Deploy Policies
-      run: |
-        $PolicyName = Get-ChildItem -Path ./src/custom-policies -Filter *.xml | Select-Object -First 1 -ExpandProperty Name
-        $PolicyName = $PolicyName -replace '\.xml$'
-        az b2c policy list --tenant-id ${{ secrets.AZURE_TENANT_ID }} --query [].name -o tsv | ForEach-Object { az b2c policy delete --tenant-id ${{ secrets.AZURE_TENANT_ID }} --name $_ }
-        az b2c policy upload --name $PolicyName --tenant-id ${{ secrets.AZURE_TENANT_ID }} --policy-file ./src/custom-policies/$PolicyName.xml
 
 
       
