@@ -1,9 +1,5 @@
 name: Deploy B2C Policies
 
-runs:
-  using: 'node20'
-  main: 'main.js'
-
 on:
   push:
     branches:
