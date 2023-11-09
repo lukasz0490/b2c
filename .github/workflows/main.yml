@@ -16,7 +16,7 @@ jobs:
     - name: Deploy Policies to Azure B2C
       uses: azure-ad-b2c/deploy-trustframework-policy@v5
       with:
-        folder: ./src/custom-policies
+        folder: .\src\custom-policies
         files: |
           TrustFrameworkBase.xml
           TrustFrameworkExtensions.xml
