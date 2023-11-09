@@ -12,6 +12,7 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
+      using: 'node20'
         
     - name: Deploy Policies to Azure B2C
       uses: azure-ad-b2c/deploy-trustframework-policy@v5
