@@ -18,9 +18,6 @@ jobs:
       with:
         node-version: '16'
 
-    - name: Install Dependencies
-      run: npm install
-
     - name: Deploy Policies
       run: node github-action-runtime/index.js
       env:
