@@ -11,15 +11,16 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2
 
-    - name: Deploy Policies to Azure B2C
-      uses: b2c/deploy-trustframework-policy@v5
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
       with:
-        folder: "./src/custom-policies"
-        files: "TrustFrameworkBase.xml,TrustFrameworkLocalization.xml,TrustFrameworkExtensions.xml,SignUpOrSignin.xml"
-        tenant: ${{ secrets.B2C_TENANT_NAME }}
-        clientId: ${{ secrets.AZURE_CLIENT_ID }}
-        clientSecret: ${{ secrets.CLIENTSECRET }}
+        node-version: '16'
 
-
+    - name: Deploy Policies
+      run: node github-action-runtime/index.js
+      env:
+        B2C_TENANT_NAME: ${{ secrets.B2C_TENANT_NAME }}
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        CLIENTSECRET: ${{ secrets.CLIENTSECRET }}
