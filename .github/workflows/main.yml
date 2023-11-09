@@ -4,17 +4,19 @@ on:
   push:
     branches:
       - main
-
+runs:
+    using: 'node16'
+    main: 'github-action-runtime/index.js'
 jobs:
   deploy:
     runs-on: windows-latest
-    
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-        
+
     - name: Deploy Policies to Azure B2C
-      uses: azure-ad-b2c/deploy-trustframework-policy@v5
+      uses: b2c/deploy-trustframework-policy@v5
       with:
         folder: "./src/custom-policies"
         files: "TrustFrameworkBase.xml,TrustFrameworkLocalization.xml,TrustFrameworkExtensions.xml,SignUpOrSignin.xml"
@@ -23,5 +25,3 @@ jobs:
         clientSecret: ${{ secrets.CLIENTSECRET }}
 
 
-
-      
